@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  nginx:
+    container_name: reverse-proxy
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 4200:4200
+      - 433:433
+    depends_on:
+      - authentication-service
+    links:
+      - authentication-service
+  authentication-service:
+    container_name: authentication-service
+    environment:
+      - PORT=3200
+      - HOST=0.0.0.0
+    ports:
+      - 3200:3200
+    build:
+      context: ./services/authentication/
+      dockerfile: Dockerfile
+    restart: always
+
